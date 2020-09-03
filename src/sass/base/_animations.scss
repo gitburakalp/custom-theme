@@ -31,12 +31,20 @@ section {
   }
 }
 
+[class*='parallax'] {
+  @extend %parallax-anim;
+}
+
 [data-anim-type] {
   img,
   .img-cover {
     transition: transform 1000ms cubic-bezier(0.575, 0.005, 0.285, 1.005), opacity 1000ms cubic-bezier(0.575, 0.005, 0.285, 1.005);
     will-change: transform, opacity;
     backface-visibility: hidden;
+  }
+
+  img {
+    transform: scale(1.25);
   }
 
   .img-cover {
@@ -53,6 +61,16 @@ section {
   &[bg-body] {
     .img-cover {
       background-color: color(primary, backgroundColor);
+    }
+  }
+}
+
+section {
+  &.is-active {
+    [data-anim-type] {
+      img {
+        transform: scale(1);
+      }
     }
   }
 }

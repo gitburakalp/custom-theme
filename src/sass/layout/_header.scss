@@ -8,6 +8,14 @@
   }
 }
 
+.no-effect-header {
+  .header {
+    &::before {
+      content: none !important;
+    }
+  }
+}
+
 .header {
   position: fixed;
   left: 0;
@@ -30,6 +38,7 @@
       height: 100%;
       background-color: $colors--white;
       box-shadow: 0 0 10px rgba($colors--black, 0.25);
+      transition: background-color 350ms;
       animation: headerAnim 1s;
       z-index: 1;
     }

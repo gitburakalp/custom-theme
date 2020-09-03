@@ -11,12 +11,13 @@ body {
   font-size: 1rem;
   background-color: color(primary, backgroundColor);
   color: color(primary, textColor);
+  transition: background-color 1s;
 
   main {
     > section {
       + * {
-        padding-top: 75px;
-        padding-bottom: 75px;
+        padding-top: $sectionGutters;
+        padding-bottom: $sectionGutters;
 
         @include media-breakpoint-up(lg) {
           padding-top: 7.5vw;
@@ -33,23 +34,29 @@ body {
   }
 }
 
-@include media-breakpoint-up(md) {
-  #body {
+@for $i from 1 to 7 {
+  h#{$i} {
+    margin-bottom: 0;
+  }
+}
+
+figure,
+p {
+  margin-bottom: 0;
+}
+
+#body {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+
+  #scroller {
     position: relative;
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    transform: translateZ(0);
-    will-change: transform;
 
-    #scroller {
-      position: relative;
-
-      transition: transform 1500ms cubic-bezier(0.19, 1, 0.22, 1), opacity 1500ms cubic-bezier(0.19, 1, 0.22, 1) !important;
-      will-change: transform, opacity;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-    }
+    @extend %parallax-anim;
   }
 }
 
@@ -77,5 +84,59 @@ body {
   &-xlarge {
     padding-top: 5vw;
     padding-bottom: 5vw;
+  }
+}
+
+%text-white--all {
+  color: $colors--white;
+
+  * {
+    color: $colors--white;
+    border-color: $colors--white !important;
+
+    &.btn {
+      &::before {
+        background-color: $colors--white;
+      }
+
+      &:hover {
+        span {
+          color: $colors--black !important;
+        }
+      }
+    }
+  }
+}
+
+%text-md-white--all {
+  @include media-breakpoint-up(md) {
+    color: $colors--white;
+
+    * {
+      color: $colors--white;
+      border-color: $colors--white !important;
+
+      &.btn {
+        &::before {
+          background-color: $colors--white;
+        }
+
+        &:hover {
+          span {
+            color: $colors--black !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.text {
+  &-white--all {
+    @extend %text-white--all;
+  }
+
+  &-md-white--all {
+    @extend %text-md-white--all;
   }
 }

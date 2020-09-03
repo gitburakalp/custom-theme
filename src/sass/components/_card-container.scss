@@ -48,6 +48,20 @@
       position: relative;
       padding: 1rem 2rem;
       text-align: center;
+
+      @include media-breakpoint-down(sm) {
+        padding-top: $sectionGutters / 2;
+
+        img {
+          box-shadow: 0 0 10px 0 rgba(13, 13, 13, 0.5);
+        }
+
+        > * {
+          + * {
+            margin-top: $sectionGutters / 4;
+          }
+        }
+      }
     }
   }
 }

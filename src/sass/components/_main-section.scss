@@ -4,4 +4,12 @@
   &--white {
     background-color: $colors--white !important;
   }
+
+  &-smonly {
+    &--white {
+      @include media-breakpoint-down(sm) {
+        background-color: $colors--white !important;
+      }
+    }
+  }
 }

@@ -1,48 +1,130 @@
 var myScroll;
+var scrollType;
 var pageY;
-var isMobile = $(window).outerWidth() < 768;
+var isMobile = $(window).outerWidth() < 1024;
+var windowHeight = $(window).height();
 var mobileSliders = [];
 var isHandheld = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-function initScrollbar() {
-  myScroll = new IScroll('#body', {
-    bounce: true,
-    mouseWheel: true,
-    scrollbars: true,
-    probeType: 2,
-    disablePointer: true,
-    scrollY: true,
-    scrollX: false,
-    useTransition: true,
-    interactiveScrollbars: true,
-  });
-}
+function initVerticalScroll() {
+  if (navigator.userAgent.toLowerCase().indexOf('firefox') == -1 && !isMobile) {
+    scrollType = 'iScroll';
 
-function addActiveSection() {
-  window.addEventListener('scroll', function () {
-    var windowY = window.scrollY;
-
-    if (windowY > 200) {
-      $('header').addClass('scrolled');
-    } else {
-      $('header').removeClass('scrolled');
-    }
-
-    $('main > section').each(function () {
-      var $section = $(this);
-      var thisOT = $(this).position().top;
-      var thisOH = $(this).outerHeight();
-
-      if (thisOT <= windowY + 500 && thisOT + thisOH - 200 > windowY) {
-        $section.addClass('is-active');
-      } else {
-        $section.removeClass('is-active');
-      }
+    myScroll = new IScroll('#body', {
+      mouseWheel: true,
+      scrollbars: true,
+      probeType: 2,
+      disablePointer: true,
+      scrollY: true,
+      scrollX: false,
+      useTransition: true,
+      interactiveScrollbars: true,
     });
+
+    myScroll.on('scroll', function () {
+      pageY = -myScroll.y;
+      commonScrollEvents();
+    });
+  } else {
+    scrollType = 'native';
+
+    $('#body').css({
+      overflow: 'visible',
+      'will-change': 'transform',
+    });
+
+    $('#scroller').css({
+      'will-change': 'transform',
+      'overflow-x': 'hidden',
+    });
+
+    $(window).scroll(function () {
+      pageY = window.pageYOffset;
+      commonScrollEvents();
+    });
+  }
+}
+
+function commonScrollEvents() {
+  if (pageY > 200) $('header').addClass('scrolled');
+  else $('header').removeClass('scrolled');
+
+  $('main > section').each(function () {
+    var $section = $(this);
+    var $body = $('body');
+    var thisOT = $(this).position().top;
+    var thisOH = $(this).outerHeight();
+
+    if (thisOT <= pageY + 300 && thisOT + thisOH - 200 > pageY) {
+      $section.addClass('is-active');
+
+      if ($section.data('body-bg') != undefined) {
+        $body.attr('style', 'background-color:' + $section.data('body-bg'));
+        $body.addClass('no-effect-header');
+      }
+    } else {
+      // $section.removeClass('is-active');
+
+      if ($section.data('body-bg') != undefined) {
+        $body.removeAttr('style');
+        $body.removeClass('no-effect-header');
+      }
+    }
+  });
+
+  $('.parallax-image').each(function () {
+    var $this = $(this);
+    var thisH = $this.outerHeight();
+    var thisParentTop = $this.closest('section').position().top;
+
+    var transformVal = 'translate3d(0,' + (-thisH - (thisParentTop - windowHeight - pageY)) / 2 + 'px, 0)';
+
+    $this.attr('style', `transform:${transformVal}`);
+  });
+
+  $('[data-parallax="true"]').each(function () {
+    var $el = $(this).closest('section');
+    sectionTop = $el.position().top;
+    thisH = $el.outerHeight();
+
+    if (pageY > sectionTop - windowHeight && pageY < sectionTop + thisH) {
+      var $this = $(this);
+      var speed = $(this).data('speed');
+
+      var val = -(pageY * speed) / 100;
+      var transformVal;
+
+      transformVal = `translateY(${val}px)`;
+      $this.attr('style', `transform:${transformVal}`);
+    }
+  });
+
+  parallaxTextsInit();
+}
+
+function parallaxTextsInit() {
+  var sectionTop;
+
+  $('.parallax-elems').each(function () {
+    var $el = $(this).closest('section');
+    sectionTop = $el.position().top;
+    thisH = $el.outerHeight();
+
+    if (pageY > sectionTop - windowHeight && pageY < sectionTop + thisH) {
+      $('[parallax-elem]').each(function (idx, e) {
+        var $this = $(this);
+
+        var val = -($(window).outerWidth() / 15) + (pageY - (sectionTop - $el.outerHeight() / 1.3)) / 5.2;
+        var transformVal;
+
+        transformVal = `translateY(${val}px)`;
+        $this.attr('style', `transform:${transformVal}`);
+      });
+    }
   });
 }
 
-function parallaxInit() {
+function initTextAnim() {
   $('[parallax-text]').each(function () {
     var $this = $(this);
     var thisVal = $this.text().trim();
@@ -54,54 +136,6 @@ function parallaxInit() {
     });
   });
 
-  myScroll.on('scroll', function () {
-    var windowHeight = $(window).height();
-    var windowY = -myScroll.y;
-
-    if (windowY > 200) {
-      $('header').addClass('scrolled');
-    } else {
-      $('header').removeClass('scrolled');
-    }
-
-    $('main > section').each(function () {
-      var $section = $(this);
-      var thisOT = $(this).position().top;
-      var thisOH = $(this).outerHeight();
-
-      if (thisOT <= windowY + 500 && thisOT + thisOH - 200 > windowY) {
-        $section.addClass('is-active');
-      } else {
-        $section.removeClass('is-active');
-      }
-    });
-
-    $('.parallax-image').each(function () {
-      var $this = $(this);
-      var thisH = $this.outerHeight();
-      var thisParentTop = $this.closest('section').position().top;
-
-      var transformVal = 'translate3d(0,' + (-thisH - (thisParentTop - windowHeight - windowY)) / 2 + 'px, 0)';
-
-      $this.attr('style', `transform:${transformVal}`);
-    });
-
-    $('[parallax-elem]').each(function (idx, e) {
-      var $this = $(this);
-      var thisH = $this.outerHeight();
-
-      if ($this.closest('section').hasClass('is-active')) {
-        var val = -($(window).outerWidth() / 14) + (windowY - ($this.closest('section').outerHeight() - thisH / 1.3)) / 5.2;
-        var transformVal;
-
-        transformVal = `translateY(${val}px)`;
-        $this.attr('style', `transform:${transformVal}`);
-      }
-    });
-  });
-}
-
-function initTextAnim() {
   $('[text-anim]').each(function (idx) {
     var thisHtml = $(this)[0].outerHTML;
     $(`<span class="text-anim-span">${thisHtml}</span>`).insertBefore($(this));
@@ -125,8 +159,10 @@ function initMobileSwipers() {
     $this.find('> * > *').addClass('slider-slide');
 
     var config = {
-      slidesPerView: 1,
+      slidesPerView: 1.1,
       spaceBetween: 15,
+      centeredSlides: true,
+      loop: true,
       containerModifierClass: 'slider-container--',
       wrapperClass: 'slider-wrapper',
       slideClass: 'slider-slide',
@@ -143,20 +179,35 @@ function initMobileSwipers() {
 
 document.addEventListener('DOMContentLoaded', function () {
   let vh = window.innerHeight * 0.01;
+  var pageY = window.pageYOffset;
+  var windowHeight = window.innerHeight;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 
   initTextAnim();
   imageAnimsInit();
+  initVerticalScroll();
 
-  if (!isMobile) {
-    initScrollbar();
-    parallaxInit();
-
-    $('.menu-trigger-button').on('click', function () {
-      $(this).parent().toggleClass('is-active');
-    });
-  } else {
-    addActiveSection();
+  if (isMobile) {
     initMobileSwipers();
   }
+
+  $('.menu-trigger-button').on('click', function () {
+    $(this).parent().toggleClass('is-active');
+  });
+});
+
+gsap.to('.parallax-rectangle', {
+  yPercent: 50,
+  scrollTrigger: {
+    trigger: '.parallax',
+    scrub: true,
+  },
+});
+
+gsap.to('.gsap-parallax-texts', {
+  yPercent: -50,
+  scrollTrigger: {
+    trigger: '.parallax',
+    scrub: true,
+  },
 });

@@ -4,6 +4,7 @@
   overflow: hidden;
 
   padding-top: 0 !important;
+  padding-bottom: 0 !important;
 
   &--filtered {
     position: relative;
@@ -29,6 +30,7 @@
     z-index: 2;
 
     min-width: 75%;
+    text-align: center;
 
     @include media-breakpoint-up(md) {
       .title {
@@ -41,7 +43,6 @@
 
   .img {
     @include media-breakpoint-down(sm) {
-      height: 100vh; /* Fallback for browsers that do not support Custom Properties */
       height: calc(var(--vh, 1vh) * 100);
     }
 
@@ -52,5 +53,8 @@
 
   .v2 {
     z-index: 4;
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
   }
 }
