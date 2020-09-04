@@ -196,18 +196,27 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-gsap.to('.parallax-rectangle', {
-  yPercent: 50,
-  scrollTrigger: {
-    trigger: '.parallax',
-    scrub: true,
-  },
-});
+// gsap.to('.parallax-rectangle', {
+//   yPercent: 50,
+//   scrollTrigger: {
+//     trigger: '.parallax',
+//     scrub: true,
+//   },
+// });
 
-gsap.to('.gsap-parallax-texts', {
-  yPercent: -50,
-  scrollTrigger: {
-    trigger: '.parallax',
-    scrub: true,
-  },
-});
+// gsap.to('.gsap-parallax-texts', {
+//   yPercent: -50,
+//   scrollTrigger: {
+//     trigger: '.parallax',
+//     scrub: true,
+//   },
+// });
+
+// gsap.to('.prx', {
+//   yPercent: 20,
+//   scrollTrigger: {
+//     trigger: '.main-block.main-block--filtered',
+//     scrub: true,
+//     start: 100,
+//   },
+// });

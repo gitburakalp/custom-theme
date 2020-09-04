@@ -16,12 +16,14 @@ body {
   main {
     > section {
       + * {
-        padding-top: $sectionGutters;
-        padding-bottom: $sectionGutters;
+        &:not(.no-padding) {
+          padding-top: $sectionGutters;
+          padding-bottom: $sectionGutters;
 
-        @include media-breakpoint-up(lg) {
-          padding-top: 7.5vw;
-          padding-bottom: 7.5vw;
+          @include media-breakpoint-up(lg) {
+            padding-top: 7.5vw;
+            padding-bottom: 7.5vw;
+          }
         }
       }
     }
